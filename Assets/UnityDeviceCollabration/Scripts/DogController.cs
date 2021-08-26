@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DogController : MonoBehaviour
-{
+public class DogController : MonoBehaviour{
 	private float dogSpeed;
 	private CharacterController dogController;
 	private Animator dogAnimator;
@@ -14,58 +13,46 @@ public class DogController : MonoBehaviour
 	private const float ACCEL_DOG = 0.005f;
 
 
-	void Start()
-	{
+	void Start(){
 		dogController = GetComponent<CharacterController>();
 		dogAnimator = GetComponent<Animator>();
 	}
 
-	void Update()
-	{
+	void Update(){
 		RotateDog();
 		RunDog();
 	}
 
-	void RotateDog()
-	{
-		if (Input.GetKey(KeyCode.D))
-		{
+	void RotateDog(){
+		if (Input.GetKey(KeyCode.D)){
 			transform.Rotate(Vector3.up * 0.5f);
 			isDogStopAndTurn = false;
-			if (dogSpeed < MINSPEED + ACCEL_DOG)
-			{
+			if (dogSpeed < MINSPEED + ACCEL_DOG){
 				dogAnimator.SetBool("isTurnRight", true);
 				isDogStopAndTurn = true;
 			}
 		}
-		else if (Input.GetKey(KeyCode.A))
-		{
+		else if (Input.GetKey(KeyCode.A)){
 			transform.Rotate(Vector3.up * -0.5f);
 			isDogStopAndTurn = false;
-			if (dogSpeed < MINSPEED + ACCEL_DOG)
-			{
+			if (dogSpeed < MINSPEED + ACCEL_DOG){
 				dogAnimator.SetBool("isTurnLeft", true);
 				isDogStopAndTurn = true;
 			}
 		}
-		else
-		{
+		else{
 			dogAnimator.SetBool("isTurnRight", false);
 			dogAnimator.SetBool("isTurnLeft", false);
 			isDogStopAndTurn = false;
 		}
 	}
 
-	void RunDog()
-	{
-		if (!isDogStopAndTurn)
-		{
-			if (Input.GetKey(KeyCode.W) && dogSpeed < MAXSPEED - ACCEL_DOG)
-			{
+	void RunDog(){
+		if (!isDogStopAndTurn){
+			if (Input.GetKey(KeyCode.W) && dogSpeed < MAXSPEED - ACCEL_DOG){
 				dogSpeed += ACCEL_DOG;
 			}
-			else if (dogSpeed > MINSPEED + ACCEL_DOG)
-			{
+			else if (dogSpeed > MINSPEED + ACCEL_DOG){
 				dogSpeed -= ACCEL_DOG;
 			}
 
