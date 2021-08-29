@@ -11,9 +11,9 @@ public class SerialHandler : MonoBehaviour {
     public event SerialDataReceivedEventHandler OnDataReceived;
 
     // シリアルポート(Windows)
-    //public string portName = "COM3";
+    public string portName = "COM8";
     // シリアルポート(Mac)
-    public string portName = "/dev/cu.ESP32test-ESP32SPP";
+    //public string portName = "/dev/cu.ESP32test-ESP32SPP";
     // シリアルポート(BlueTooth)
     //public string portName = "/dev/cu.ESP32test-ESP32SPP";
 

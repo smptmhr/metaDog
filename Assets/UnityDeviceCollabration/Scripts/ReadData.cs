@@ -24,4 +24,8 @@ public class ReadData : MonoBehaviour {
         text.text = data;
     }
 
+    public string getText(){
+        return text.text;
+    }
+
 }
