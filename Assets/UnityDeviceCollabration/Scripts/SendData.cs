@@ -6,15 +6,19 @@ public class SendData : MonoBehaviour {
     // シリアルハンドラ
     // 外から指定するためpublic
     public SerialHandler serial;
+    public ReadData readDataText;
 
-    // 送信データ用Text
     // 外から指定するためpublic
-    public Text sendText;
+    private string sendText;
 
-    // テキストの送信
-    public void SendText () {
-        // シリアル通信で送信
-        serial.Write (sendText.text);
+    void Start(){
+    }
+
+    void Update(){
+            sendText=readDataText.getText();
+            if(sendText != "back"  || sendText !="")
+                serial.Write (sendText);
+            Debug.Log(sendText);
     }
 
 }

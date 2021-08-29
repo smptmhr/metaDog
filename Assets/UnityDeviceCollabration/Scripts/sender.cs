@@ -2,20 +2,17 @@ using System.Collections;
 using System.IO.Ports;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 // シリアル通信用ハンドラ
-public class SerialHandler : MonoBehaviour {
+public class sender : MonoBehaviour {
     // String(シリアルで受け取った文字列)を引数とするデリゲート型の定義
     public delegate void SerialDataReceivedEventHandler (string message);
     // データを受け取った時に呼び出されるデリゲート
     public event SerialDataReceivedEventHandler OnDataReceived;
 
     // シリアルポート(Windows)
-    public string portName = "COM8";
-    // シリアルポート(Mac)
-    //public string portName = "/dev/cu.ESP32test-ESP32SPP";
-    // シリアルポート(BlueTooth)
-    //public string portName = "/dev/cu.ESP32test-ESP32SPP";
+    public string portName;
 
     // ボーレート
     public int baudRate = 115200;
@@ -31,9 +28,21 @@ public class SerialHandler : MonoBehaviour {
     // 新しいデータを受け取ったかのフラグ
     private bool isNewMessageReceived_ = false;
 
+    public ReadData readDataText;
+    private string sendtext="";
+
     // 起動時処理
     void Awake () {
         Open ();
+    }
+
+    public void SendText(){
+        string tmp = readDataText.getText();
+        if(sendtext != tmp){
+            sendtext = tmp;
+            Write(sendtext);
+            Debug.Log(sendtext);
+        }
     }
 
     void Update () {
@@ -41,6 +50,7 @@ public class SerialHandler : MonoBehaviour {
         if (isNewMessageReceived_) {
             OnDataReceived (message_);
         }
+        SendText();
     }
 
     // 終了時処理

@@ -31,7 +31,6 @@ public class DogController : MonoBehaviour{
 
 	void DogBackHome(){
 		if(readDataText.getText() == "back" && !isWait){
-			Debug.Log("帰宅");
 			gameObject.transform.position =　new Vector3(-7.14f,1.0f,8.9f);
 			gameObject.transform.rotation= Quaternion.Euler(0.0f,-263.439f,0.0f);
 			isWait=true;
@@ -40,7 +39,6 @@ public class DogController : MonoBehaviour{
 
 	void DogMoveStart(){
 		if(readDataText.getText() == "go" && isWait){
-			Debug.Log("出発");
 			//gameObject.transform.position =　new Vector3(3.0f,1.0f,10.0f);
 			isWait=false;
 			isStop=false;
