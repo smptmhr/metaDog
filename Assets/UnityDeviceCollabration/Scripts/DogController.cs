@@ -18,9 +18,10 @@ public class DogController : MonoBehaviour{
 	public bool isGo = false;
 	public bool isStop = true;
 	public bool isBackRotatioin = false;
+	public bool isDogStopFlag = false;
 
-	Vector3 target = new Vector3(-7.27f,1.0f,7.75f);
-	Vector3 defaltDirection = new Vector3(0.0f,0.0f,0.0f);
+	Vector3 target = new Vector3(-7.34f,1.0f,8.06f);
+	
 
 	void Start(){
 		dogController = GetComponent<CharacterController>();
@@ -35,58 +36,77 @@ public class DogController : MonoBehaviour{
 		dogAnimator.SetInteger("Idle", UnityEngine.Random.Range(1, 5));
 	}
 
+	void RunDog(){
+		if (!isDogStopAndTurn && !isStop){
+			if (dogSpeed < MAXSPEED - ACCEL_DOG){
+				dogSpeed += ACCEL_DOG;
+			}else if (dogSpeed > MINSPEED + ACCEL_DOG){
+				dogSpeed -= ACCEL_DOG;
+			}
+
+			gameObject.transform.position += dogSpeed * 2 * transform.forward * Time.deltaTime;
+			dogAnimator.SetFloat("DogSpeed", dogSpeed);
+		}
+	}
+
+	void DogMoveStart(){
+		if(readDataText.getText() == "go" && isWait && !isBackRotatioin){
+			isWait=false;
+			isStop=false;
+			isGo = true;
+         	// transform.eulerAngles= new Vector3(0,310,0);
+			// Debug.Log(transform.eulerAngles.y);
+        }
+		if(isGo){
+			if(transform.position.x<-4.0f)
+				isGo = false;
+		}
+	}
 	
 
 	void DogBackHome(){
 		if(readDataText.getText() == "back" && !isWait){
-			gameObject.transform.position =　new Vector3(-8.02f,1.0f,8.78f);
+			gameObject.transform.position =　new Vector3(-7.27f,1.0f,7.75f);
 			gameObject.transform.localEulerAngles= new Vector3(0.0f,96.561f,0.0f);
 			isWait=true;
 			isGo = false;
 		}
 	}
 
-	void DogMoveStart(){
-		if(readDataText.getText() == "go" && isWait){
-			isWait=false;
-			isStop=false;
-			isGo = true;
-         	transform.eulerAngles= new Vector3(0,310,0);
-			Debug.Log(transform.eulerAngles.y);
-        }
-		if(isGo){
-			GoRotate();
-			if(transform.position.x<-7)
-				isGo = false;
+	void DogMoveStop(){
+		if(readDataText.getText() == "stop" && !isDogStopFlag){
+			dogAnimator.SetFloat("DogSpeed", 0);
+			isStop = true;
+			isBackRotatioin = true;
+			isDogStopFlag = true;
+			dogAnimator.SetBool("isTurnLeft", true);
+		}
+		if(isBackRotatioin){
+			RotateLookBack();
+			isDogStopAndTurn  = true;
+			Vector3 targetDirection = target - transform.position;
+			targetDirection.Normalize();
+			Vector3 tmp = transform.forward - targetDirection;
+			if(tmp.magnitude < 0.01){
+			 	isBackRotatioin = false;
+				isDogStopAndTurn = false;
+				isDogStopFlag = false;
+
+			}else if(tmp.magnitude < 0.3){
+				dogAnimator.SetBool("isTurnLeft", false);
+			}
 		}
 	}
+
 	
-	void GoRotate(){
+	void RotateLookBack(){
         Vector3 targetDirection = target - transform.position;
         float singleStep = ROTATESPEED * Time.deltaTime;
         Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
         transform.rotation = Quaternion.LookRotation(newDirection);
 	}
 
-	void DogMoveStop(){
-		if(readDataText.getText() == "stop"){
-			dogAnimator.SetFloat("DogSpeed", 0);
-			isStop = true;
-			isBackRotatioin = true;
-		}
-		if(isBackRotatioin){
-			GoRotate();
-			dogAnimator.SetBool("isTurnRight", true);
-			isDogStopAndTurn  = true;
-			Vector3 targetDirection = target - transform.position;
-			targetDirection.Normalize();
-			Vector3 tmp = transform.forward - targetDirection;
-			 if(tmp.magnitude<0.3){
-			 	isBackRotatioin = false;
-				dogAnimator.SetBool("isTurnRight", false);
-			}
-		}
-	}
+
 	void RotateRight(){
 			transform.Rotate(Vector3.up * 0.5f);
 			isDogStopAndTurn = false;
@@ -111,16 +131,5 @@ public class DogController : MonoBehaviour{
 		isDogStopAndTurn = false;
 	}
 
-	void RunDog(){
-		if (!isDogStopAndTurn && !isStop){
-			if (dogSpeed < MAXSPEED - ACCEL_DOG){
-				dogSpeed += ACCEL_DOG;
-			}else if (dogSpeed > MINSPEED + ACCEL_DOG){
-				dogSpeed -= ACCEL_DOG;
-			}
 
-			gameObject.transform.position += dogSpeed * 2 * transform.forward * Time.deltaTime;
-			dogAnimator.SetFloat("DogSpeed", dogSpeed);
-		}
-	}
 }
