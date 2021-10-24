@@ -5,6 +5,7 @@ Temp/
 Obj/
 UnityGenerated/
 Library/
+*.log
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
