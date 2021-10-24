@@ -1,53 +1,52 @@
-#include <VL53L0X.h>
-#include<Wire.h>
-#define Hand_Pin 13
+#define HAND_PIN 13
+#define START_PIN 32
+#define STOP_PIN 35
+#define BACK_PIN 34
 
-volatile bool isWait; //true:ラジコン待機状態
-float hand_sound; //クラップ音を検出すると0になる
-
-VL53L0X sensor;
+bool isWait, isStop, isBack;
+const int th = 1000;
 
 void setup() {
   Serial.begin(115200);
-  //Serial.begin(9600);
+  delay(100);
 
-  Wire.begin(SDA, SCL);
-  sensor.setTimeout(500);
-  if(!sensor.init()){
-    Serial.println("Failed to detect and initialize sensor");
-    while(1){}
-  }
-  sensor.startContinuous();
-  
-  //VM-CLAP1は1回目のanalogReadで小さい値が出るのでダミー処理
-  hand_sound = analogRead(Hand_Pin);
-  isWait = true;
+   isWait = true;
+   isStop = false;
+   isBack = false;
 }
 
 void loop() {
+  int startPress = analogRead(START_PIN);
+  int stopPress = analogRead(STOP_PIN);
+  int backPress = analogRead(BACK_PIN);
 
-  /*
-  //Serial.print(sensor.readRangeContinuousMillimeters());
-  int d = sensor.readRangeContinuousMillimeters();
-  //if (sensor.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
-  //Serial.print(d);
-  //Serial.println();
-  if(d < 50 && !isWait){
-    Serial.println("back");
-    isWait = true;
-    delay(1000);
-    Serial.println("stop");
-    delay(500);
-  }
-  //delay(500);
-*/
-  
-  hand_sound = analogRead(Hand_Pin);  
-  Serial.println(hand_sound);
-  if (isWait && hand_sound < 5.0) { //待機状態でクラップ
-    Serial.println("go");
+  float handSound = analogRead(HAND_PIN);
+
+  //Serial.println(handSound);
+
+  //待機状態かつクラップが認識
+  if(isWait && handSound < 5.0){
+    Serial.println("clap");
     isWait = false;
-    //delay(3000);
   }
-  delay(1);
+  //ストップ用圧力センサを踏んだ
+  if(!isWait && !isStop && stopPress > th){
+    Serial.println("stop");
+    isStop = true;
+    isBack = false;
+  }
+  //バック用圧力センサを踏んだ
+  if(!isWait && !isBack && backPress > th){
+    Serial.println("back");
+    isBack = true;
+    isStop = false;
+  }
+  //スタート地点に戻ってきたので待機
+  if(!isWait && isBack && startPress > th){
+    Serial.println("wait");
+    isWait = true;
+    isBack = false;
+  }
+  
+  delay(10);
 }
