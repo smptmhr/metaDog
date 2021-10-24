@@ -50,7 +50,7 @@ public class DogController : MonoBehaviour{
 	}
 
 	void DogMoveStart(){
-		if(readDataText.getText() == "go" && isWait && !isBackRotatioin){
+		if(readDataText.getText() == "clap" && isWait && !isBackRotatioin){
 			isWait=false;
 			isStop=false;
 			isGo = true;
