@@ -6,7 +6,16 @@ public class DogController : MonoBehaviour{
 	private float dogSpeed;
 	private CharacterController dogController;
 	private Animator dogAnimator;
-	private bool isDogStopAndTurn;
+
+	public int status = 0;
+	//0 : Dog&radio controler are waiting at (A)
+	//1 : Dog is running foaward
+	//2 : Dog is out of display & radio controller is moving
+	//3 : radio controller is stopping in center of touch display (B)
+	//4 : radio controller is moving toward (C) 
+	//5 : radio controller is moving orbitally
+	//6 : radio controller is going back to waiting space
+	//7 : radio controller is moving toward waiting area(A)
 	public ReadData readDataText;
 
 	private const float MAXSPEED = 1.0f;
@@ -29,52 +38,83 @@ public class DogController : MonoBehaviour{
 	}
 
 	void Update(){
-		RunDog();
-		DogMoveStart();
-		DogBackHome();
-		DogMoveStop();
+		Debug.Log(status);
+		StatusController();
+		SwitchStatusByReadText();
+		//DogMoveStop();
 		dogAnimator.SetInteger("Idle", UnityEngine.Random.Range(1, 5));
 	}
 
-	void RunDog(){
-		if (!isDogStopAndTurn && !isStop){
-			if (dogSpeed < MAXSPEED - ACCEL_DOG){
-				dogSpeed += ACCEL_DOG;
-			}else if (dogSpeed > MINSPEED + ACCEL_DOG){
-				dogSpeed -= ACCEL_DOG;
-			}
-
-			gameObject.transform.position += dogSpeed * 2 * transform.forward * Time.deltaTime;
-			dogAnimator.SetFloat("DogSpeed", dogSpeed);
+	void StatusController(){
+		switch (status){
+			case 0: // Dog&radio controler are waiting at (A)
+				break;
+			case 1: // Dog is running foaward
+				RunDog();
+				break;
+			case 6: // radio controller is going back to waiting space
+				DogBackHome();
+				break;
+			case 7: // radio controller is moving toward waiting area(A)
+				RunDog();
+				break;
+			case 8:
+				DogMoveStop();
+				break;
+			default:
+				break;
 		}
 	}
 
-	void DogMoveStart(){
-		if(readDataText.getText() == "clap" && isWait && !isBackRotatioin){
-			isWait=false;
-			isStop=false;
-			isGo = true;
-         	// transform.eulerAngles= new Vector3(0,310,0);
-			// Debug.Log(transform.eulerAngles.y);
+	void SwitchStatusByReadText(){
+		Debug.Log(readDataText.getText());
+		if(status ==0 && readDataText.getText() == "clap"){
+			status = 1;
         }
-		if(isGo){
-			if(transform.position.x<-4.0f)
-				isGo = false;
+		if(status ==2 && readDataText.getText() == "stop"){
+			status = 3;
 		}
+		if(status ==3){
+			// if(readDataText.getText() == "bad"){
+			// 	status = 4; 
+			// }else if(readDataText.getText() == "good") {
+			// 	status= 5 ;
+			// }
+			status = 4; 
+		}
+		if(status == 4 && readDataText.getText() == "back"){
+			status = 6;
+		}
+		if(status == 9 && readDataText.getText() == "wait"){
+			status = 0;
+		}
+	}
+
+	void RunDog(){
+		if (dogSpeed < MAXSPEED - ACCEL_DOG){
+			dogSpeed += ACCEL_DOG;
+		}else if (dogSpeed > MINSPEED + ACCEL_DOG){
+			dogSpeed -= ACCEL_DOG;
+		}
+
+		gameObject.transform.position += dogSpeed * 2 * transform.forward * Time.deltaTime;
+		dogAnimator.SetFloat("DogSpeed", dogSpeed);
+
+		if(status == 1 && transform.position.x<-8.0f)
+			status=2;
+		if(status == 7 && transform.position.x>-2.0f)
+			status = 8;
 	}
 	
-
 	void DogBackHome(){
-		if(readDataText.getText() == "back" && !isWait){
 			gameObject.transform.position =　new Vector3(-7.27f,1.0f,7.75f);
 			gameObject.transform.localEulerAngles= new Vector3(0.0f,96.561f,0.0f);
-			isWait=true;
-			isGo = false;
-		}
+			
+			status = 7;
 	}
 
 	void DogMoveStop(){
-		if(readDataText.getText() == "stop" && !isDogStopFlag){
+		if(!isDogStopFlag){
 			dogAnimator.SetFloat("DogSpeed", 0);
 			isStop = true;
 			isBackRotatioin = true;
@@ -83,17 +123,16 @@ public class DogController : MonoBehaviour{
 		}
 		if(isBackRotatioin){
 			RotateLookBack();
-			isDogStopAndTurn  = true;
 			Vector3 targetDirection = target - transform.position;
 			targetDirection.Normalize();
 			Vector3 tmp = transform.forward - targetDirection;
 			if(tmp.magnitude < 0.01){
 			 	isBackRotatioin = false;
-				isDogStopAndTurn = false;
 				isDogStopFlag = false;
 
 			}else if(tmp.magnitude < 0.3){
 				dogAnimator.SetBool("isTurnLeft", false);
+				status = 9;
 			}
 		}
 	}
@@ -105,31 +144,4 @@ public class DogController : MonoBehaviour{
         Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
         transform.rotation = Quaternion.LookRotation(newDirection);
 	}
-
-
-	void RotateRight(){
-			transform.Rotate(Vector3.up * 0.5f);
-			isDogStopAndTurn = false;
-			if (dogSpeed < MINSPEED + ACCEL_DOG){
-				dogAnimator.SetBool("isTurnRight", true);
-				isDogStopAndTurn  = true;
-			}
-	}
-
-	void RotateLeft(){
-			transform.Rotate(Vector3.up * -0.5f);
-			isDogStopAndTurn = false;
-			if (dogSpeed < MINSPEED + ACCEL_DOG){
-				dogAnimator.SetBool("isTurnLeft", true);
-				isDogStopAndTurn = true;
-			}
-	}
-
-	void RotateStop(){
-		dogAnimator.SetBool("isTurnRight", false);
-		dogAnimator.SetBool("isTurnLeft", false);
-		isDogStopAndTurn = false;
-	}
-
-
 }
