@@ -16,7 +16,8 @@ public class DogController : MonoBehaviour{
 	//5 : radio controller is moving orbitally
 	//6 : radio controller is going back to waiting space
 	//7 : radio controller is moving toward waiting area(A)
-	public ReadData readDataText;
+	public ReadData textPressure;
+	public ReadData textStroke;
 
 	private const float MAXSPEED = 1.0f;
 	private const float MINSPEED = 0.0f;
@@ -67,25 +68,20 @@ public class DogController : MonoBehaviour{
 	}
 
 	void SwitchStatusByReadText(){
-		Debug.Log(readDataText.getText());
-		if(status ==0 && readDataText.getText() == "clap"){
+		Debug.Log(textPressure.getText());
+		if(status ==0 && textPressure.getText() == "clap"){
 			status = 1;
         }
-		if(status ==2 && readDataText.getText() == "stop"){
+		if(status ==2 && textPressure.getText() == "stop"){
 			status = 3;
 		}
-		if(status ==3){
-			// if(readDataText.getText() == "bad"){
-			// 	status = 4; 
-			// }else if(readDataText.getText() == "good") {
-			// 	status= 5 ;
-			// }
-			status = 4; 
+		if(status ==3 && textStroke.getText() == "go"){
+				status = 4; 
 		}
-		if(status == 4 && readDataText.getText() == "back"){
+		if(status == 4 && textPressure.getText() == "back"){
 			status = 6;
 		}
-		if(status == 9 && readDataText.getText() == "wait"){
+		if(status == 9 && textPressure.getText() == "wait"){
 			status = 0;
 		}
 	}
