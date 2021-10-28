@@ -16,6 +16,8 @@ public class DogController : MonoBehaviour{
 	//5 : radio controller is moving orbitally
 	//6 : radio controller is going back to waiting space
 	//7 : radio controller is moving toward waiting area(A)
+
+	private bool radioControllerIsWaiting = true;
 	public ReadData textPressure;
 	public ReadData textStroke;
 
@@ -81,8 +83,11 @@ public class DogController : MonoBehaviour{
 		if(status == 4 && textPressure.getText() == "back"){
 			status = 6;
 		}
-		if(status == 9 && textPressure.getText() == "wait"){
+		if(status == 9 && radioControllerIsWaiting){
 			status = 0;
+		}
+		if(textPressure.getText() == "wait"){
+			radioControllerIsWaiting = true;
 		}
 	}
 
@@ -96,8 +101,10 @@ public class DogController : MonoBehaviour{
 		gameObject.transform.position += dogSpeed * 2 * transform.forward * Time.deltaTime;
 		dogAnimator.SetFloat("DogSpeed", dogSpeed);
 
-		if(status == 1 && transform.position.x<-8.0f)
+		if(status == 1 && transform.position.x<-8.0f){
 			status=2;
+			radioControllerIsWaiting = false;
+		}
 		if(status == 7 && transform.position.x>-2.0f)
 			status = 8;
 	}
