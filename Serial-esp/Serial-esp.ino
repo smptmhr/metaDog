@@ -24,29 +24,30 @@ void loop() {
 
   //Serial.println(handSound);
 
-  //待機状態かつクラップが認識
-  if(isWait && handSound < 5.0){
-    Serial.println("clap");
-    isWait = false;
-  }
-  //ストップ用圧力センサを踏んだ
-  if(!isWait && !isStop && stopPress > th){
-    Serial.println("stop");
-    isStop = true;
-    isBack = false;
-  }
-  //バック用圧力センサを踏んだ
-  if(!isWait && !isBack && backPress > th){
-    Serial.println("back");
-    isBack = true;
-    isStop = false;
-  }
-  //スタート地点に戻ってきたので待機
-  if(!isWait && isBack && startPress > th){
-    Serial.println("wait");
-    isWait = true;
-    isBack = false;
-  }
-  
+  if(isWait){
+     if(handSound < 5.0){
+       Serial.println("clap");
+       isWait = false;
+     }
+  }else{
+     //ストップ用圧力センサを踏んだ
+     if(!isStop && stopPress > th){
+       Serial.println("stop");
+       isStop = true;
+       isBack = false;
+     }
+     //バック用圧力センサを踏んだ
+     else if(!isBack && backPress > th){
+       Serial.println("back");
+       isBack = true;
+       isStop = false;
+     }
+     //スタート地点に戻ってきたので待機
+     else if(isBack && startPress > th){
+       Serial.println("wait");
+       isWait = true;
+       isBack = false;
+     }
+ }
   delay(10);
 }

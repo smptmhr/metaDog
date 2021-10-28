@@ -25,7 +25,6 @@ public class ReadData : MonoBehaviour {
     }
 
     public string getText(){
-        //Debug.Log(text.text);
         return text.text;
     }
 
