@@ -51,6 +51,7 @@ public class DogController : MonoBehaviour{
 	void StatusController(){
 		switch (status){
 			case 0: // Dog&radio controler are waiting at (A)
+				dogAnimator.SetInteger("Idle", UnityEngine.Random.Range(1, 5));
 				break;
 			case 1: // Dog is running foaward
 				RunDog();
