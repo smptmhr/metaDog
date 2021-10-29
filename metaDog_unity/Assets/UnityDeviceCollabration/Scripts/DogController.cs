@@ -38,7 +38,6 @@ public class DogController : MonoBehaviour{
 	void Start(){
 		dogController = GetComponent<CharacterController>();
 		dogAnimator = GetComponent<Animator>();
-		status=6;
 	}
 
 	void Update(){
