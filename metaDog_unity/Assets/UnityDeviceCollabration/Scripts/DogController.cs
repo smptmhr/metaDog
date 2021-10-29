@@ -16,6 +16,8 @@ public class DogController : MonoBehaviour{
 	//5 : radio controller is moving orbitally
 	//6 : radio controller is going back to waiting space
 	//7 : radio controller is moving toward waiting area(A)
+
+	public bool radioControllerIsWaiting = true;
 	public ReadData textPressure;
 	public ReadData textStroke;
 
@@ -36,6 +38,7 @@ public class DogController : MonoBehaviour{
 	void Start(){
 		dogController = GetComponent<CharacterController>();
 		dogAnimator = GetComponent<Animator>();
+		status=6;
 	}
 
 	void Update(){
@@ -76,13 +79,17 @@ public class DogController : MonoBehaviour{
 			status = 3;
 		}
 		if(status ==3 && textStroke.getText() == "go"){
-				status = 4; 
+			status = 4; 
 		}
 		if(status == 4 && textPressure.getText() == "back"){
 			status = 6;
 		}
-		if(status == 9 && textPressure.getText() == "wait"){
+		if(status == 9 && radioControllerIsWaiting){
+			dogAnimator.SetFloat("DogSpeed", 0);
 			status = 0;
+		}
+		if(status != 2 && textPressure.getText() == "wait"){
+			radioControllerIsWaiting = true;
 		}
 	}
 
@@ -94,12 +101,17 @@ public class DogController : MonoBehaviour{
 		}
 
 		gameObject.transform.position += dogSpeed * 2 * transform.forward * Time.deltaTime;
+		Debug.Log(dogSpeed);
 		dogAnimator.SetFloat("DogSpeed", dogSpeed);
 
-		if(status == 1 && transform.position.x<-8.0f)
+		if(status == 1 && transform.position.x<-8.0f){
 			status=2;
-		if(status == 7 && transform.position.x>-2.0f)
+			radioControllerIsWaiting = false;
+		}
+		if(status == 7 && transform.position.x>-2.0f){
+			dogAnimator.SetFloat("DogSpeed", 0.2f);
 			status = 8;
+		}
 	}
 	
 	void DogBackHome(){
@@ -126,7 +138,7 @@ public class DogController : MonoBehaviour{
 			 	isBackRotatioin = false;
 				isDogStopFlag = false;
 
-			}else if(tmp.magnitude < 0.3){
+			}else if(tmp.magnitude < 0.1){
 				dogAnimator.SetBool("isTurnLeft", false);
 				status = 9;
 			}

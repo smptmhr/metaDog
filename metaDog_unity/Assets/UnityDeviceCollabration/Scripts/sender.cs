@@ -28,7 +28,9 @@ public class sender : MonoBehaviour {
     // 新しいデータを受け取ったかのフラグ
     private bool isNewMessageReceived_ = false;
 
-    public ReadData readDataText;
+    // public ReadData readDataText;
+    public DogController dog;
+    public ReadData textPressure;
     private string sendtext="";
 
     // 起動時処理
@@ -37,7 +39,11 @@ public class sender : MonoBehaviour {
     }
 
     public void SendText(){
-        string tmp = readDataText.getText();
+        string tmp="";
+        if(dog.status == 0 || dog.status == 3||dog.radioControllerIsWaiting)
+            tmp="s";
+        if(dog.status == 2 ||dog.status == 4)
+            tmp="g";
         if(sendtext != tmp){
             sendtext = tmp;
             Write(sendtext);
