@@ -47,7 +47,6 @@ public class sender : MonoBehaviour {
         if(sendtext != tmp){
             sendtext = tmp;
             Write(sendtext);
-            Debug.Log(sendtext);
         }
     }
 

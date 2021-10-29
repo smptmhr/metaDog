@@ -41,10 +41,8 @@ public class DogController : MonoBehaviour{
 	}
 
 	void Update(){
-		Debug.Log(status);
 		StatusController();
 		SwitchStatusByReadText();
-		//DogMoveStop();
 		dogAnimator.SetInteger("Idle", UnityEngine.Random.Range(1, 5));
 	}
 
@@ -70,7 +68,6 @@ public class DogController : MonoBehaviour{
 	}
 
 	void SwitchStatusByReadText(){
-		Debug.Log(textPressure.getText());
 		if(status ==0 && textPressure.getText() == "clap"){
 			status = 1;
         }
@@ -100,7 +97,6 @@ public class DogController : MonoBehaviour{
 		}
 
 		gameObject.transform.position += dogSpeed * 2 * transform.forward * Time.deltaTime;
-		Debug.Log(dogSpeed);
 		dogAnimator.SetFloat("DogSpeed", dogSpeed);
 
 		if(status == 1 && transform.position.x<-8.0f){
