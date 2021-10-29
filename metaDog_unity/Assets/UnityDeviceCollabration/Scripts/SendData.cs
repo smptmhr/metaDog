@@ -18,7 +18,6 @@ public class SendData : MonoBehaviour {
             sendText=readDataText.getText();
             if(sendText != "back"  || sendText !="")
                 serial.Write (sendText);
-            Debug.Log(sendText);
     }
 
 }
