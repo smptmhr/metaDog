@@ -42,7 +42,7 @@ public class sender : MonoBehaviour {
         string tmp="";
         if(dog.status == 0 || dog.status == 3||dog.radioControllerIsWaiting)
             tmp="s";
-        if(dog.status == 2 ||dog.status == 4)
+        if(dog.status == 1 ||dog.status == 4)
             tmp="g";
         if(sendtext != tmp){
             sendtext = tmp;
