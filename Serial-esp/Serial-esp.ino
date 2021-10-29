@@ -4,7 +4,7 @@
 #define BACK_PIN 34
 
 bool isWait, isStop, isBack;
-const int th = 1000;
+const int th = 50;
 
 void setup() {
   Serial.begin(115200);
@@ -20,16 +20,24 @@ void loop() {
 
   //Serial.println(handSound);
 
-     if(handSound < 5.0)
-       Serial.println("clap");
-     else if(stopPress > th)     //ストップ用圧力センサを踏んだ
-       Serial.println("stop");
-     else if(backPress > th)//バック用圧力センサを踏んだ
-       Serial.println("back"); 
-
-     else if(startPress > th)//スタート地点に戻ってきたので待機
-       Serial.println("wait");
-     else
-        Serial.println(""); 
-     delay(10);
+  /*
+  Serial.print(startPress);
+  Serial.print(",");
+  Serial.print(stopPress);
+  Serial.print(",");
+  Serial.println(backPress);
+  */
+  
+  if(handSound < 5.0)
+    Serial.println("clap");
+  else if(stopPress > th)   //ストップ用圧力センサを踏んだ
+    Serial.println("stop");
+  else if(backPress > th)   //バック用圧力センサを踏んだ
+    Serial.println("back"); 
+  else if(startPress > th)  //スタート地点に戻ってきたので待機
+    Serial.println("wait");
+  else
+    Serial.println(""); 
+  
+  delay(1);
 }
