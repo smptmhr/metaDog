@@ -38,6 +38,7 @@ public class DogController : MonoBehaviour{
 	void Start(){
 		dogController = GetComponent<CharacterController>();
 		dogAnimator = GetComponent<Animator>();
+		status=6;
 	}
 
 	void Update(){
@@ -137,7 +138,7 @@ public class DogController : MonoBehaviour{
 			 	isBackRotatioin = false;
 				isDogStopFlag = false;
 
-			}else if(tmp.magnitude < 0.3){
+			}else if(tmp.magnitude < 0.1){
 				dogAnimator.SetBool("isTurnLeft", false);
 				status = 9;
 			}
