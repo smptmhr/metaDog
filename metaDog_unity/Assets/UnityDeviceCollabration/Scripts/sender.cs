@@ -40,7 +40,8 @@ public class sender : MonoBehaviour {
 
     public void SendText(){
         string tmp="";
-        if(dog.status == 0 || dog.status == 3||textPressure.getText()=="wait")
+        //if(dog.status == 0 || dog.status == 3||textPressure.getText()=="wait")
+        if(dog.status == 0 || dog.status == 3||dog.radioControllerIsWaiting)
             tmp="s";
         if(dog.status == 2 ||dog.status == 4)
             tmp="g";

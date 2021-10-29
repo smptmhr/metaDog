@@ -17,7 +17,7 @@ public class DogController : MonoBehaviour{
 	//6 : radio controller is going back to waiting space
 	//7 : radio controller is moving toward waiting area(A)
 
-	private bool radioControllerIsWaiting = true;
+	public bool radioControllerIsWaiting = true;
 	public ReadData textPressure;
 	public ReadData textStroke;
 
@@ -79,7 +79,7 @@ public class DogController : MonoBehaviour{
 			status = 3;
 		}
 		if(status ==3 && textStroke.getText() == "go"){
-				status = 4; 
+			status = 4; 
 		}
 		if(status == 4 && textPressure.getText() == "back"){
 			status = 6;
@@ -87,7 +87,7 @@ public class DogController : MonoBehaviour{
 		if(status == 9 && radioControllerIsWaiting){
 			status = 0;
 		}
-		if(textPressure.getText() == "wait"){
+		if(status != 2 && textPressure.getText() == "wait"){
 			radioControllerIsWaiting = true;
 		}
 	}
