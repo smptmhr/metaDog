@@ -51,7 +51,6 @@ public class DogController : MonoBehaviour{
 	void StatusController(){
 		switch (status){
 			case 0: // Dog&radio controler are waiting at (A)
-				dogAnimator.SetInteger("Idle", UnityEngine.Random.Range(1, 5));
 				break;
 			case 1: // Dog is running foaward
 				RunDog();
@@ -85,6 +84,7 @@ public class DogController : MonoBehaviour{
 			status = 6;
 		}
 		if(status == 9 && radioControllerIsWaiting){
+			dogAnimator.SetFloat("DogSpeed", 0);
 			status = 0;
 		}
 		if(status != 2 && textPressure.getText() == "wait"){
@@ -100,14 +100,17 @@ public class DogController : MonoBehaviour{
 		}
 
 		gameObject.transform.position += dogSpeed * 2 * transform.forward * Time.deltaTime;
+		Debug.Log(dogSpeed);
 		dogAnimator.SetFloat("DogSpeed", dogSpeed);
 
 		if(status == 1 && transform.position.x<-8.0f){
 			status=2;
 			radioControllerIsWaiting = false;
 		}
-		if(status == 7 && transform.position.x>-2.0f)
+		if(status == 7 && transform.position.x>-2.0f){
+			dogAnimator.SetFloat("DogSpeed", 0.2f);
 			status = 8;
+		}
 	}
 	
 	void DogBackHome(){
